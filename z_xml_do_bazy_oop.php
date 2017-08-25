@@ -40,32 +40,32 @@ class XML_do_bazy{
 	
 	
     public function tworzStringTxt($plik_xml){
-		$obiekt = simplexml_load_file("xml/".$plik_xml);
+        $obiekt = simplexml_load_file("xml/".$plik_xml);
         $attrdate = $obiekt->runstats->finished->attributes();
-		$attrdate = $obiekt->runstats->finished->attributes();
-		$datatab = $attrdate['timestr'];
-		$data = $this->utworzDate($datatab);
+        $attrdate = $obiekt->runstats->finished->attributes();
+        $datatab = $attrdate['timestr'];
+        $data = $this->utworzDate($datatab);
         $tablica = array();
         $string = "";
         $licznik_wierszy=0;
         foreach($obiekt as $host){
             if(isset($host->address[1]) && isset($host->address[0])){
-            $attrmac = $host->address[1]->attributes();
-            $ajpi = $host->address[0]->attributes();
-            $mac = (string)$attrmac['addr'];
-            $ip = (string)$ajpi['addr'];
-            $licznik_wierszy++;
-            $string .= $licznik_wierszy.",".$mac.",".$ip.",".$data.",".$this->vlan."\r\n";
+                $attrmac = $host->address[1]->attributes();
+                $ajpi = $host->address[0]->attributes();
+                $mac = (string)$attrmac['addr'];
+                $ip = (string)$ajpi['addr'];
+                $licznik_wierszy++;
+                $string .= $licznik_wierszy.",".$mac.",".$ip.",".$data.",".$this->vlan."\r\n";
             }
         }
         return $string;
     }
     
     public function tworzPlikTxt(){
-		$this->lista_xmli = $this->pobierzPlikiXML();
-		foreach($this->lista_xmli as $plik_xml){
-        file_put_contents("txt/".$plik_xml.".txt", $this->tworzStringTxt($plik_xml));
-		}
+        $this->lista_xmli = $this->pobierzPlikiXML();
+        foreach($this->lista_xmli as $plik_xml){
+            file_put_contents("txt/".$plik_xml.".txt", $this->tworzStringTxt($plik_xml));
+        }
     }
     
     public function wypelnijTabliceTmp(){
@@ -79,16 +79,16 @@ class XML_do_bazy{
         }
 		var_dump($this->lista_xmli)."<br>";
 		foreach($this->lista_xmli as $plik_xml){
-        $sql = "LOAD DATA LOCAL INFILE 'C:/xampp/htdocs/nowe_hosty/nowe_hosty_load_data_oop/txt/$plik_xml.txt' IGNORE INTO TABLE tmp 
+        $sql = "LOAD DATA LOCAL INFILE 'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/txt/$plik_xml.txt' IGNORE INTO TABLE tmp 
 			FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n' (@klucz, nowy_mac, nowy_ip, data, VLAN)";
 			echo $sql;
         if($result = mysqli_query($conn, $sql)){
         $result = mysqli_query($conn, $sql);
-		if(!file_exists('C:/xampp/htdocs/nowe_hosty/nowe_hosty_load_data_oop/stare_pliki_xml/'.$this->dataczas)){
-			mkdir('C:/xampp/htdocs/nowe_hosty/nowe_hosty_load_data_oop/stare_pliki_xml/'.$this->dataczas);
+		if(!file_exists('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas)){
+			mkdir('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas);
 		}
-		rename('C:/xampp/htdocs/nowe_hosty/nowe_hosty_load_data_oop/xml/'.$plik_xml, 
-			'C:/xampp/htdocs/nowe_hosty/nowe_hosty_load_data_oop/stare_pliki_xml/'.$this->dataczas.'/'.$plik_xml);
+		rename('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/xml/'.$plik_xml, 
+			'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas.'/'.$plik_xml);
         }else{
             echo "coś źle";
 			echo $sql;
