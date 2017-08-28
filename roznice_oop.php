@@ -1,31 +1,41 @@
 <?php
     class Roznice{
-        private $servername;
-        private $username;
-        private $password;
-        private $dbname;
-        private $conn;
+//        private $servername;
+//        private $username;
+//        private $password;
+//        private $dbname;
+//        private $conn;
+          public $db;
+          private $class_db_file;
         
         public function __construct(){
-            $this->servername = "localhost";
-            $this->username = "root";
-            $this->password = "";
-            $this->dbname = "nowe_hosty";
-            $this->conn = @mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
-	if(!$this->conn){
-		die("B³¹d po³¹czenia z baz¹: ".mysqli_connect_error());
-	}
+//            $this->servername = "localhost";
+//            $this->username = "root";
+//            $this->password = "";
+//            $this->dbname = "nowe_hosty";
+//            $this->conn = @mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
+//	if(!$this->conn){
+//		die("Bï¿½ï¿½d poï¿½ï¿½czenia z bazï¿½: ".mysqli_connect_error());
+//	}
+        $this->class_db_file = 'db.php';
+
+        if(file_exists($this->class_db_file)){
+            require_once($this->class_db_file);
+            $this->db = new db();
+        }else{
+            echo "brak pliku z klasÄ… do Å‚Ä…czenia z db";
+        }
         }
 
         
         public function znajdzRoznice(){
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "nowe_hosty";
+//        $servername = "localhost";
+//        $username = "root";
+//        $password = "";
+//        $dbname = "nowe_hosty";
 
 	$zapytanie = "SELECT * FROM tmp WHERE nowy_mac NOT IN (SELECT mac_address FROM znane_hosty)";
-	$rezultat = mysqli_query($this->conn, $zapytanie);
+	$rezultat = mysqli_query($this->db->connection, $zapytanie);
 
         
         return $rezultat;
@@ -44,12 +54,10 @@
                     $licznik++;
             }
             mysqli_free_result($res);
-            mysqli_close($this->conn);
+            //mysqli_close($this->db->connection);
             return $tabelka;
         }
         public function __destruct(){
-            
-	
             
         }
     }
@@ -69,6 +77,6 @@ $roznica = new Roznice();
 echo $roznica->wyswietlRoznice();
 ?>
     </table>
- <a href="zakoncz_oop.php">Zakoñcz</a>
+ <a href="zakoncz_oop.php">ZakoÅ„cz</a>
 </body>
 </html>

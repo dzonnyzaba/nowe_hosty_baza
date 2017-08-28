@@ -1,5 +1,5 @@
 <?php
-require_once "connection.php";
+//require_once "connection.php";
 
 
 class XML_do_bazy{
@@ -7,36 +7,44 @@ class XML_do_bazy{
     //private $data;
     //private $obiektxml;
     private $vlan;
-	private $lista_xmli;
-	private $dataczas;
+    private $lista_xmli;
+    private $dataczas;
+    public $db;
+    private $class_db_file;
 	
     
     public function __construct(){
         $this->vlan = 10;
-		$this->lista_xmli = array();
-		$this->dataczas = date("d-m-y");
-}
+	$this->lista_xmli = array();
+        $this->dataczas = date("d-m-y");
+        $this->class_db_file = 'db.php';
+        if(file_exists($this->class_db_file)){
+            require_once($this->class_db_file);
+            $this->db = new db();
+        }else{
+            echo "brak pliku z klasą do łączenia z db";
+        }
+    }
 
-	private function pobierzPlikiXML(){
-		$dir = "xml";
-		$tabtmp = array();
-		$files = scandir($dir);
-			foreach($files as $f){
-				if($f!="." && $f!=".."){
-					$tabtmp[]=$f;		
-				}
-			}
-			
-		if(count($tabtmp)>1){
-			return $tabtmp;
-		}else{
-			echo "nieeeeeeeeeeeeeeee";
-			header('location: index.php?error=1');
-			exit();
-		}
-		var_dump($tabtmp);
+    private function pobierzPlikiXML(){
+            $dir = "xml";
+            $tabtmp = array();
+            $files = scandir($dir);
+                foreach($files as $f){
+                        if($f!="." && $f!=".."){
+                                $tabtmp[]=$f;		
+                        }
+                }
 
-	}
+        if(count($tabtmp)>=1){
+                return $tabtmp;
+        }else{
+                echo "nieeeeeeeeeeeeeeee";
+                header('location: index.php?error=1');
+                exit();
+        }
+        var_dump($tabtmp);
+    }
 	
 	
     public function tworzStringTxt($plik_xml){
@@ -69,21 +77,21 @@ class XML_do_bazy{
     }
     
     public function wypelnijTabliceTmp(){
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "nowe_hosty";
-        $conn = @mysqli_connect($servername, $username, $password, $dbname);
-        if(!$conn){
-                die("Błąd połączenia z bazą: ".mysqli_connect_error());
-        }
+//        $servername = "localhost";
+//        $username = "root";
+//        $password = "";
+//        $dbname = "nowe_hosty";
+//        $conn = @mysqli_connect($servername, $username, $password, $dbname);
+//        if(!$conn){
+//                die("Błąd połączenia z bazą: ".mysqli_connect_error());
+//        }
 		var_dump($this->lista_xmli)."<br>";
 		foreach($this->lista_xmli as $plik_xml){
         $sql = "LOAD DATA LOCAL INFILE 'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/txt/$plik_xml.txt' IGNORE INTO TABLE tmp 
 			FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n' (@klucz, nowy_mac, nowy_ip, data, VLAN)";
 			echo $sql;
-        if($result = mysqli_query($conn, $sql)){
-        $result = mysqli_query($conn, $sql);
+        if($result = mysqli_query($this->db->connection, $sql)){
+        $result = mysqli_query($this->db->connection, $sql);
 		if(!file_exists('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas)){
 			mkdir('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas);
 		}
@@ -95,7 +103,7 @@ class XML_do_bazy{
         }
 		}
         //var_dump($result);
-        mysqli_close($conn);
+        mysqli_close($this->db->connection);
     }
 
 public function utworzDate($s){

@@ -8,7 +8,7 @@ if(isset($_GET['id'])){
     uwagi: <input type="text" name="uwagi"/>
     <input type="submit" value="dodaj"/>
 </form>
-<a href="roznice_oop.php">PowrÛt do tabelki</a>
+<a href="roznice_oop.php">Powr√≥t do tabelki</a>
 <?php        
 if((isset($_POST['nazwa']) && !empty($_POST['nazwa'])) && 
 (isset($_POST['lokalizacja']) && !empty($_POST['lokalizacja'])) && 
@@ -19,30 +19,27 @@ class Dodaj{
     private $nowa_lokalizacja;
     private $nowe_uwagi;
     private $id;
-    private $servername;
-    private $username;
-    private $password;
-    private $dbname;
-    private $conn;
+    public $db;
+    private $class_db_file;
     
     public function __construct(){
         $this->nowa_nazwa = $_POST['nazwa'];
         $this->nowa_lokalizacja = $_POST['lokalizacja'];
         $this->nowe_uwagi = $_POST['uwagi'];        
         $this->id = $_GET['id'];
-        $this->servername = "localhost";
-        $this->username = "root";
-        $this->password = "";
-        $this->dbname = "nowe_hosty";
-        $this->conn = @mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
-	if(!$this->conn){
-            die("B≥πd po≥πczenia z bazπ: ".mysqli_connect_error());
-	}
+        $this->class_db_file = 'db.php';
+
+        if(file_exists($this->class_db_file)){
+            require_once($this->class_db_file);
+            $this->db = new db();
+        }else{
+            echo "brak pliku z klasƒÖ do ≈ÇƒÖczenia z db";
+        }
     }
     
     public function pobierzPozostaleDane(){
         $zapytanie_nowe = "SELECT * FROM tmp WHERE id_nowego_hosta=$this->id";
-	$rezultat_nowe = mysqli_query($this->conn, $zapytanie_nowe);
+	$rezultat_nowe = mysqli_query($this->db->connection, $zapytanie_nowe);
 	$row = mysqli_fetch_array($rezultat_nowe);
         return $row;
     }
@@ -54,22 +51,21 @@ class Dodaj{
 	VALUES('".$this->nowa_nazwa."', '".$row_sel['nowy_mac']."', '".$row_sel['data']."', '".
         $this->nowa_lokalizacja."', '".$this->nowe_uwagi."', '".$row_sel['VLAN']."', '"
         .$row_sel['nowy_ip']."')";
-        $rezultat_znane = mysqli_query($this->conn, $zapytanie_znane);
+        $rezultat_znane = mysqli_query($this->db->connection, $zapytanie_znane);
         if($rezultat_znane){
-		echo "do≥πczono host do bazy";
+		echo "do≈ÇƒÖczono host do bazy";
 	}else{
-		echo "nie uda≥o siÍ do≥πczyc hosta do bazy";
+		echo "nie uda≈Ço siƒô do≈ÇƒÖczyc hosta do bazy";
 	}
-        //mysqli_free_result($rezultat_znane);
+        
         return 0;
     }
     
     public function kasujRekord(){
-        //$this->dodajRekord();
 	$zapytanie_nowe_kasuj = "DELETE FROM tmp WHERE id_nowego_hosta=$this->id";
-	mysqli_query($this->conn, $zapytanie_nowe_kasuj);
+	mysqli_query($this->db->connection, $zapytanie_nowe_kasuj);
 	
-	mysqli_close($this->conn);
+	mysqli_close($this->db->connection);
         header('location: roznice_oop.php');        
     }
 }
@@ -78,7 +74,7 @@ $dodaj->dodajRekord();
 $dodaj->kasujRekord();
 //header('location: roznice_oop.php');
 }else{
-    echo "<p>wype≥nij wszystkie pola</p>";
+    echo "<p>wype≈Çnij wszystkie pola</p>";
 }
 }else{
 	header('location: roznice_oop.php');
