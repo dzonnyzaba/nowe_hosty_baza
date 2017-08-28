@@ -65,7 +65,7 @@ class Dodaj{
 	$zapytanie_nowe_kasuj = "DELETE FROM tmp WHERE id_nowego_hosta=$this->id";
 	mysqli_query($this->db->connection, $zapytanie_nowe_kasuj);
 	
-	mysqli_close($this->db->connection);
+	//mysqli_close($this->db->connection);
         header('location: roznice_oop.php');        
     }
 }

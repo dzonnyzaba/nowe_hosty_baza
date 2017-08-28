@@ -1,22 +1,9 @@
 <?php
     class Roznice{
-//        private $servername;
-//        private $username;
-//        private $password;
-//        private $dbname;
-//        private $conn;
           public $db;
           private $class_db_file;
         
         public function __construct(){
-//            $this->servername = "localhost";
-//            $this->username = "root";
-//            $this->password = "";
-//            $this->dbname = "nowe_hosty";
-//            $this->conn = @mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
-//	if(!$this->conn){
-//		die("B��d po��czenia z baz�: ".mysqli_connect_error());
-//	}
         $this->class_db_file = 'db.php';
 
         if(file_exists($this->class_db_file)){
@@ -29,15 +16,10 @@
 
         
         public function znajdzRoznice(){
-//        $servername = "localhost";
-//        $username = "root";
-//        $password = "";
-//        $dbname = "nowe_hosty";
 
 	$zapytanie = "SELECT * FROM tmp WHERE nowy_mac NOT IN (SELECT mac_address FROM znane_hosty)";
 	$rezultat = mysqli_query($this->db->connection, $zapytanie);
 
-        
         return $rezultat;
         }
         
@@ -54,7 +36,6 @@
                     $licznik++;
             }
             mysqli_free_result($res);
-            //mysqli_close($this->db->connection);
             return $tabelka;
         }
         public function __destruct(){

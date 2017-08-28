@@ -20,6 +20,7 @@ class db{
 			$this->error = mysqli_error();
 			$this->connection = false;
 		}else{
+                        $polaczenie->set_charset("utf8");
 			$this->connection = $polaczenie;
 		}
 	}
@@ -97,6 +98,7 @@ class db{
 	
 	public function __destruct(){
 		$this->close();
+                echo "koncze!";
 	}
 	
 }

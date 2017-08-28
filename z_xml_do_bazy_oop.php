@@ -1,11 +1,7 @@
 <?php
-//require_once "connection.php";
 
 
 class XML_do_bazy{
-    //private $file_path;
-    //private $data;
-    //private $obiektxml;
     private $vlan;
     private $lista_xmli;
     private $dataczas;
@@ -27,14 +23,14 @@ class XML_do_bazy{
     }
 
     private function pobierzPlikiXML(){
-            $dir = "xml";
-            $tabtmp = array();
-            $files = scandir($dir);
-                foreach($files as $f){
-                        if($f!="." && $f!=".."){
-                                $tabtmp[]=$f;		
-                        }
-                }
+        $dir = "xml";
+        $tabtmp = array();
+        $files = scandir($dir);
+        foreach($files as $f){
+            if($f!="." && $f!=".."){
+                $tabtmp[]=$f;		
+            }
+        }
 
         if(count($tabtmp)>=1){
                 return $tabtmp;
@@ -77,33 +73,25 @@ class XML_do_bazy{
     }
     
     public function wypelnijTabliceTmp(){
-//        $servername = "localhost";
-//        $username = "root";
-//        $password = "";
-//        $dbname = "nowe_hosty";
-//        $conn = @mysqli_connect($servername, $username, $password, $dbname);
-//        if(!$conn){
-//                die("Błąd połączenia z bazą: ".mysqli_connect_error());
-//        }
-		var_dump($this->lista_xmli)."<br>";
-		foreach($this->lista_xmli as $plik_xml){
+	var_dump($this->lista_xmli)."<br>";
+        foreach($this->lista_xmli as $plik_xml){
         $sql = "LOAD DATA LOCAL INFILE 'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/txt/$plik_xml.txt' IGNORE INTO TABLE tmp 
 			FIELDS TERMINATED BY ',' LINES TERMINATED BY '\r\n' (@klucz, nowy_mac, nowy_ip, data, VLAN)";
-			echo $sql;
+	echo $sql;
         if($result = mysqli_query($this->db->connection, $sql)){
         $result = mysqli_query($this->db->connection, $sql);
-		if(!file_exists('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas)){
-			mkdir('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas);
-		}
-		rename('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/xml/'.$plik_xml, 
-			'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas.'/'.$plik_xml);
+	if(!file_exists('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas)){
+            mkdir('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas);
+	}
+	rename('C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/xml/'.$plik_xml, 
+	'C:/xampp/htdocs/nowe_hosty/nowe_hosty_baza/stare_pliki_xml/'.$this->dataczas.'/'.$plik_xml);
         }else{
             echo "coś źle";
-			echo $sql;
+            echo $sql;
         }
-		}
+	}
         //var_dump($result);
-        mysqli_close($this->db->connection);
+        //mysqli_close($this->db->connection);
     }
 
 public function utworzDate($s){
